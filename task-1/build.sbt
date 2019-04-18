@@ -25,3 +25,9 @@ scalacOptions ++= Seq(
 )
 scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Ywarn-unused-import"))
 scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
+
+
+libraryDependencies ++= Seq(
+  "eu.timepit" %% "refined" % "0.9.5",
+  "org.scalatest" %% "scalatest" % "3.0.7" % Test
+)

@@ -29,10 +29,11 @@ class MultiQueueTest extends AsyncFreeSpec with Matchers {
   }
 
   "A not empty queue behaves correctly in multi-threaded environment" in {
-    val numberOfInputs = 10000
-    val groupSize = 1000
+    val numberOfInputs = 1000000
+    val groupSize = 100000
     val allElements = (1 to numberOfInputs).toList
       .grouped(groupSize).toList
+    val expected = allElements.flatten.toSet
 
     val queue = MultiQueue.empty[Integer](2)
 
@@ -48,21 +49,26 @@ class MultiQueueTest extends AsyncFreeSpec with Matchers {
       }
     }
 
-    Future.traverse(allElements){ group =>
+    val fInput = Future.traverse(allElements){ group =>
       Future.traverse(group) { element =>
         Future(queue.insert(element))
       }
     }
-      .map(_ => takeUntilEmpty(queue.isEmpty, List.empty[Integer]))
-      .map {
-        case (_, allTaken) =>
-          val aggregatedAllTaken = allTaken.flatMap(Option(_))
-          val expected = allElements.flatten
-          aggregatedAllTaken should contain theSameElementsAs expected
 
-          queue.size shouldBe 0
-          queue.isEmpty shouldBe true
-          Option(queue.deleteMin()) shouldBe None
+    Future.traverse(allElements){ _ =>
+      Future(takeUntilEmpty(queue.isEmpty, List.empty[Integer]))
+    }.map {
+      _.flatMap {
+        case (_, taken) => taken
       }
+    }.zip(fInput).map {
+      case (allTaken, _) =>
+        val aggregatedAllTaken = allTaken.flatMap(Option(_))
+        aggregatedAllTaken.toSet shouldBe expected
+
+        queue.size shouldBe 0
+        queue.isEmpty shouldBe true
+        Option(queue.deleteMin()) shouldBe None
+    }
   }
 }

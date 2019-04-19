@@ -14,10 +14,22 @@ class MultiQueue[A >: Null] private (
   private val underlyingQueues = (1 to nQueues).map(_ => Queue.empty[A]).toArray
   private val locks = new AtomicIntegerArray(nQueues)
   private val random = new Random()
+  private var firstQueueSize = 0
 
   def isEmpty: Boolean = underlyingQueues.forall(_.isEmpty)
+
   /*Really "best effort" which is not accurate most of the time.*/
-  def size: Int        = underlyingQueues.count(!_.isEmpty)
+  def size: Int = {
+    if (isEmpty)
+      0
+    else {
+      val nonEmptySubqueuesCount = underlyingQueues.count(!_.isEmpty)
+      if (nonEmptySubqueuesCount <= underlyingQueues.length)
+        nonEmptySubqueuesCount
+      else
+      firstQueueSize * underlyingQueues.length
+  }
+}
 
   def insert(element: A): Unit = {
     val initialTriedIndex = random.nextInt(nQueues)
@@ -27,6 +39,7 @@ class MultiQueue[A >: Null] private (
         locked = locks.compareAndSet(initialTriedIndex, 0, 1)
       )
     underlyingQueues(effectivelyLockedIndex).enqueue(element)
+    if (effectivelyLockedIndex == 0) firstQueueSize = Math.min(Int.MaxValue, firstQueueSize + 1)
     val _ = locks.compareAndSet(effectivelyLockedIndex, 1, 0)
   }
 
@@ -52,6 +65,7 @@ class MultiQueue[A >: Null] private (
         locked = locks.compareAndSet(initialTriedIndexI, 0, 1)
       )
     val result = underlyingQueues(effectivelyLockedIndex).deleteMin()
+    if (effectivelyLockedIndex == 0) firstQueueSize = Math.max(0, firstQueueSize - 1)
     locks.compareAndSet(effectivelyLockedIndex, 1, 0)
     result
   }

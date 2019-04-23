@@ -1,5 +1,8 @@
 package task1.modifyme
 
+import metal.syntax._
+import spire.ClassTag
+
 /**
  * Stores the distances (of type `W) to the labels `A`.
  */
@@ -18,14 +21,14 @@ object Distances {
   def empty(implicit ev: Infinity[Int]): Distances[Int, Int] = new MapDistances
 }
 
-class MapDistances[A, W](implicit ev: Infinity[W]) extends Distances[A, W] {
-  var underlying = Map.empty[A, W]
+class MapDistances[A, W](implicit ev: Infinity[W], cta: ClassTag[A], ctw: ClassTag[W]) extends Distances[A, W] {
+  var underlying = metal.mutable.HashMap[A, W]()
 
   def distanceAt(a: A): W = {
     underlying.getOrElse(a, Infinity[W])
   }
 
   def updated(label: A, value: W): Unit = {
-    this.underlying = underlying.updated(label, value)
+    underlying.update(label, value)
   }
 }

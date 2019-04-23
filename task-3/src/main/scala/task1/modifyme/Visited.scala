@@ -1,5 +1,7 @@
 package task1.modifyme
 
+import metal.syntax._
+
 /*
  * A collection of visited labels `A`.
  */
@@ -15,10 +17,10 @@ abstract class Visited[A] {
 }
 
 object Visited {
-  def empty = new SetVisited(new scala.collection.mutable.HashSet[Int])
+  def empty = new SetVisited(metal.mutable.HashSet[Int]())
 }
 
-case class SetVisited(val underlying: scala.collection.mutable.Set[Int]) extends Visited[Int] {
+case class SetVisited(val underlying: metal.mutable.Set[Int]) extends Visited[Int] {
   override def notVisited(a: Int) = !underlying.contains(a)
   override def updated(a: Int): Unit= {
     underlying += a

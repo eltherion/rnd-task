@@ -1,0 +1,25 @@
+rnd-task/task-3$ sbt -J-Xmx24g ";clean;run"
+[info] Loading settings for project global-plugins from idea.sbt ...
+[info] Loading global plugins from .sbt/1.0/plugins
+[info] Loading project definition from rnd-task/task-3/project
+[info] Loading settings for project task-3 from build.sbt ...
+[info] Set current project to optimize (in build file:rnd-task/task-3/)
+[success] Total time: 0 s, completed Apr 20, 2019, 7:16:06 PM
+[info] Updating ...
+[info] Done updating.
+[info] Compiling 13 Scala sources to rnd-task/task-3/target/scala-2.12/classes ...
+[info] Done compiling.
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.protobuf.UnsafeUtil (file:.sbt/boot/scala-2.12.7/org.scala-sbt/sbt/1.2.8/protobuf-java-3.3.1.jar) to field java.nio.Buffer.address
+WARNING: Please consider reporting this to the maintainers of com.google.protobuf.UnsafeUtil
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+[info] Packaging rnd-task/task-3/target/scala-2.12/optimize_2.12-1.0.0.jar ...
+[info] Done packaging.
+[info] Running task1.Main 
+Reading connections...
+Graph created in: 15330 [ms]
+Calculating paths...
+Found 14285385 paths in 126708 [ms]
+Printing to file... done in 32730 [ms]
+[success] Total time: 181 s, completed Apr 20, 2019, 7:19:07 PM

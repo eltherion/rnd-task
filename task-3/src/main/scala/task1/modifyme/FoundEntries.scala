@@ -17,16 +17,17 @@ object FoundEntries {
 }
 
 class ListFoundEntries[A, W] extends FoundEntries[A, W] {
-  var entries = List.empty[Entry[A, W]]
+  var entries = metal.mutable.Buffer.empty[Entry[A, W]]
 
-  def add(entry: Entry[A, W]): Unit = 
-    entries ::= entry
+  def add(entry: Entry[A, W]): Unit = {
+    val _ = entries += entry
+  }
 
   // we don't count the initial entry because it's the origin
   def nEntries = entries.length - 1
 
   override def toString = {
     // the first entry added is always the origin which we need to skip
-    entries.toList.dropRight(1).mkString("\n")
+    entries.array.drop(1).filter(_ != null).mkString("\n")
   }
 }

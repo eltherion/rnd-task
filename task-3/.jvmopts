@@ -1,0 +1,5 @@
+-Xss1g
+-XX:+UseG1GC
+-XX:-UseGCOverheadLimit
+-XX:ReservedCodeCacheSize=128m
+-XX:+AggressiveOpts
